@@ -91,7 +91,7 @@ def main():
 
     # 创建一个图形界面
     root = Tk()
-    root.title("机器翻译")
+    root.title("基于Transformer的机器翻译")
 
     # 设置窗口大小
     root.geometry("600x300")
