@@ -3,7 +3,7 @@ import torch
 from model import config
 from torch.autograd import Variable
 from model.Attention_mask import subsequent_mask
-from torchtext.data.metrics import bleu_score
+
 
 def greedy_decode(model, src, src_mask, max_len, start_symbol):
     """
@@ -33,13 +33,11 @@ def greedy_decode(model, src, src_mask, max_len, start_symbol):
 
 def predict(data, model):
     """
-    在data上用训练好的模型进行预测，打印模型翻译结果并计算BLEU得分
+    在data上用训练好的模型进行预测，打印模型翻译结果
     """
     # 梯度清零
     with torch.no_grad():
-        all_refs = []  # 存储所有参考翻译句子
-        all_hyp = []   # 存储模型预测的翻译句子
-
+        # 在data的英文数据长度上遍历下标
         for i in range(len(data.dev_en)):
             # 打印待翻译的英文语句
             en_sent = " ".join([data.en_index_dict[w] for w in data.dev_en[i]])
@@ -72,14 +70,3 @@ def predict(data, model):
             # 打印模型翻译输出的中文语句结果
             print("translation: %s" % " ".join(translation))
 
-            # 准备BLEU评估数据
-            ref = [data.dev_cn[i]]  # 真实的中文句子（作为参考）
-            hyp = translation  # 模型预测的中文翻译句子（作为候选）
-
-            # BLEU得分计算
-            all_refs.append(ref)
-            all_hyp.append(hyp)
-
-        # 计算BLEU分数
-        bleu = bleu_score(all_hyp, all_refs)
-        print(f"\nFinal BLEU score: {bleu:.4f}")
